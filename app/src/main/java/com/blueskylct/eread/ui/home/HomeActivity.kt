@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.*
 import com.blueskylct.eread.databinding.ActivityHomeBinding
 import com.blueskylct.eread.ui.adapter.BookListAdapter
+import com.blueskylct.eread.utils.EpubUtil
 import com.blueskylct.eread.utils.PermissionUtil
 
 class HomeActivity : AppCompatActivity() {
@@ -39,7 +40,8 @@ class HomeActivity : AppCompatActivity() {
         binding.recyclerview.layoutManager = LinearLayoutManager(this, VERTICAL, false)
 
         binding.ftb.setOnClickListener {
-            PermissionUtil.checkPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE, binding.ftb.id % 65536)
+            if (PermissionUtil.checkPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE, binding.ftb.id % 65536))
+                mLauncher.launch("application/epub+zip")
         }
     }
 
@@ -53,17 +55,15 @@ class HomeActivity : AppCompatActivity() {
              if (PermissionUtil.checkGrant(grantResults)) {
                  mLauncher.launch("application/epub+zip")
              }
-            else{
+/*            else{
                  PermissionUtil.checkPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE, binding.ftb.id % 65536)
-             }
+             }*/
          }
     }
 
     private fun pickEpubBook(uri: Uri){
         try {
-            contentResolver.openInputStream(uri)?.use {
-                Toast.makeText(this, "已选择文件：",Toast.LENGTH_LONG).show()
-            }
+            EpubUtil.loadEpubFromUri(this, uri)
         }catch (e: Exception){
             Toast.makeText(this, "读取失败", Toast.LENGTH_LONG).show()
         }
