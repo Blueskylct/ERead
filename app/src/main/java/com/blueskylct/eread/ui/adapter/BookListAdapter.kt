@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskylct.eread.databinding.ItemBookBinding
+import com.blueskylct.eread.domain.model.CacheBook
 import nl.siegmann.epublib.domain.Book
 
-class BookListAdapter(private val bookList: ArrayList<Book>): RecyclerView.Adapter<BookListAdapter.BookListViewHolder>() {
+class BookListAdapter(private val bookList: ArrayList<CacheBook>): RecyclerView.Adapter<BookListAdapter.BookListViewHolder>() {
 
     inner class BookListViewHolder(binding: ItemBookBinding) : RecyclerView.ViewHolder(binding.root){
         val frontCover = binding.frontCover
@@ -26,9 +27,9 @@ class BookListAdapter(private val bookList: ArrayList<Book>): RecyclerView.Adapt
 
     override fun onBindViewHolder(holder: BookListViewHolder, position: Int) {
         val book = bookList[position]
-        val bitmap = BitmapFactory.decodeStream(book.coverImage.inputStream)
-        holder.frontCover.setImageBitmap(bitmap)
+        //val bitmap = BitmapFactory.decodeStream(book.coverImage.inputStream)
+        //holder.frontCover.setImageBitmap(bitmap)
         holder.title.text = book.title
-        holder.introduction.text = book.metadata.descriptions.toString()
+        holder.introduction.text = book.introduction
     }
 }
