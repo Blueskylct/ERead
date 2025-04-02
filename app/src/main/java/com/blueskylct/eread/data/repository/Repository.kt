@@ -2,8 +2,10 @@ package com.blueskylct.eread.data.repository
 
 import androidx.lifecycle.LiveData
 import com.blueskylct.eread.MyApplication
+import com.blueskylct.eread.data.local.AppDatabase
 import com.blueskylct.eread.domain.model.CacheBook
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
 class Repository {
@@ -20,11 +22,18 @@ class Repository {
         }
     }
 
-    private val bookDao = MyApplication.getDatabase().bookDao()
+    private val bookDao = AppDatabase.getInstance(MyApplication.getInstance()).bookDao()
 
-    suspend fun getBook(): LiveData<ArrayList<CacheBook>>
+    suspend fun insertBook(book: CacheBook)
     = withContext(Dispatchers.IO){
-        bookDao.getBook()
+        bookDao.insert(book)
     }
 
+    suspend fun getBook(): List<CacheBook>
+    = withContext(Dispatchers.IO){
+        val deferred = async {
+            bookDao.getBook()
+        }
+        deferred.await()
+    }
 }

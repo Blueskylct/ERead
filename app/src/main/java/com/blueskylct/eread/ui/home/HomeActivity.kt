@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.*
@@ -24,6 +25,7 @@ class HomeActivity : AppCompatActivity() {
     private val mLauncher = registerForActivityResult(ActivityResultContracts.GetContent()){
         uri -> uri?.let { pickEpubBook(uri) }
     }
+    private lateinit var adapter: BookListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,12 +38,18 @@ class HomeActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        binding.recyclerview.adapter = BookListAdapter(viewModel.bookList!!)
+        viewModel.loadBook()
+        adapter = BookListAdapter(viewModel.bookListLiveData.value as ArrayList)
+        binding.recyclerview.adapter = adapter
         binding.recyclerview.layoutManager = LinearLayoutManager(this, VERTICAL, false)
 
         binding.ftb.setOnClickListener {
             if (PermissionUtil.checkPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE, binding.ftb.id % 65536))
                 mLauncher.launch("application/epub+zip")
+        }
+
+        viewModel.bookListLiveData.observe(this) {
+            adapter.updateData(it as ArrayList)
         }
     }
 
@@ -55,9 +63,9 @@ class HomeActivity : AppCompatActivity() {
              if (PermissionUtil.checkGrant(grantResults)) {
                  mLauncher.launch("application/epub+zip")
              }
-/*            else{
-                 PermissionUtil.checkPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE, binding.ftb.id % 65536)
-             }*/
+            else{
+                Toast.makeText(this, "需开启权限才能读取文件", Toast.LENGTH_LONG).show()
+             }
          }
     }
 

@@ -1,5 +1,6 @@
 package com.blueskylct.eread.ui.adapter
 
+import android.annotation.SuppressLint
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -31,5 +32,12 @@ class BookListAdapter(private val bookList: ArrayList<CacheBook>): RecyclerView.
         //holder.frontCover.setImageBitmap(bitmap)
         holder.title.text = book.title
         holder.introduction.text = book.introduction
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateData(newList: ArrayList<CacheBook>){
+        bookList.clear()
+        bookList.addAll(newList)
+        notifyDataSetChanged()
     }
 }

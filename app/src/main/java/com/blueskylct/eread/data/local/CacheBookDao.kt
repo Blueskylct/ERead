@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.blueskylct.eread.domain.model.CacheBook
+import kotlinx.coroutines.Deferred
 
 @Dao
 interface CacheBookDao {
@@ -17,8 +18,8 @@ interface CacheBookDao {
     suspend fun update(book: CacheBook)
 
     @Delete
-    suspend fun delete(title: String)
+    suspend fun delete(book: CacheBook)
 
     @Query("Select * from book")
-    suspend fun getBook():LiveData<ArrayList<CacheBook>>
+    suspend fun getBook():List<CacheBook>
 }
