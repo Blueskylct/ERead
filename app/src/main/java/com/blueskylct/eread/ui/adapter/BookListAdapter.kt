@@ -1,13 +1,11 @@
 package com.blueskylct.eread.ui.adapter
 
 import android.annotation.SuppressLint
-import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskylct.eread.databinding.ItemBookBinding
 import com.blueskylct.eread.domain.model.CacheBook
-import nl.siegmann.epublib.domain.Book
 
 class BookListAdapter(private val bookList: ArrayList<CacheBook>): RecyclerView.Adapter<BookListAdapter.BookListViewHolder>() {
 

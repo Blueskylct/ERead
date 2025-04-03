@@ -9,7 +9,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.*
@@ -21,7 +20,8 @@ import com.blueskylct.eread.utils.PermissionUtil
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityHomeBinding
-    private val viewModel by lazy {ViewModelProvider(this)[HomeViewModel::class.java]}
+    private val _viewModel by lazy {ViewModelProvider(this)[HomeViewModel::class.java]}
+        val viewModel get() = _viewModel
     private val mLauncher = registerForActivityResult(ActivityResultContracts.GetContent()){
         uri -> uri?.let { pickEpubBook(uri) }
     }
@@ -38,8 +38,8 @@ class HomeActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        viewModel.loadBook()
-        adapter = BookListAdapter(viewModel.bookListLiveData.value as ArrayList)
+        _viewModel.loadBook()
+        adapter = BookListAdapter(_viewModel.bookListLiveData.value as ArrayList)
         binding.recyclerview.adapter = adapter
         binding.recyclerview.layoutManager = LinearLayoutManager(this, VERTICAL, false)
 
@@ -48,7 +48,7 @@ class HomeActivity : AppCompatActivity() {
                 mLauncher.launch("application/epub+zip")
         }
 
-        viewModel.bookListLiveData.observe(this) {
+        _viewModel.bookListLiveData.observe(this) {
             adapter.updateData(it as ArrayList)
         }
     }

@@ -27,6 +27,7 @@
             android:id="@+id/TabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/Cyan2"
             app:tabMode="scrollable"/>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -36,6 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
+        android:layout_marginTop="10dp"
         android:paddingBottom="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
