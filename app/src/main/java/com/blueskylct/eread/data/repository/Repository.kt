@@ -1,6 +1,5 @@
 package com.blueskylct.eread.data.repository
 
-import androidx.lifecycle.LiveData
 import com.blueskylct.eread.MyApplication
 import com.blueskylct.eread.data.local.AppDatabase
 import com.blueskylct.eread.domain.model.CacheBook

@@ -1,6 +1,8 @@
 package com.blueskylct.eread.utils
 
+import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -9,7 +11,7 @@ object PermissionUtil {
     /**
      * @author Blueskylct
      * @since 2025/3/29
-     * 检查并请求读写权限
+     * 检查并请求权限
      */
     fun checkPermission(activity: Activity, permission: String, requestCode: Int): Boolean =
         checkPermission(activity, arrayOf(permission), requestCode)
@@ -28,6 +30,13 @@ object PermissionUtil {
         }
         return result
     }
+
+    /**
+     *
+     *
+     */
+    fun checkReadPermission(context: Context) =
+        PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
 
     /**
      * @author Blueskylct

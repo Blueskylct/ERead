@@ -1,6 +1,7 @@
 package com.blueskylct.eread.ui.home
 
 import android.Manifest
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
@@ -11,9 +12,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager.*
 import com.blueskylct.eread.databinding.ActivityHomeBinding
 import com.blueskylct.eread.ui.adapter.BookListAdapter
+import com.blueskylct.eread.ui.reading.ReadingActivity
 import com.blueskylct.eread.utils.EpubUtil
 import com.blueskylct.eread.utils.PermissionUtil
 
@@ -38,10 +39,12 @@ class HomeActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        contentResolver
+
         _viewModel.loadBook()
-        adapter = BookListAdapter(_viewModel.bookListLiveData.value as ArrayList)
+        adapter = BookListAdapter(_viewModel.bookListLiveData.value as ArrayList, this)
+        binding.recyclerview.layoutManager = LinearLayoutManager(this)
         binding.recyclerview.adapter = adapter
-        binding.recyclerview.layoutManager = LinearLayoutManager(this, VERTICAL, false)
 
         binding.ftb.setOnClickListener {
             if (PermissionUtil.checkPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE, binding.ftb.id % 65536))
@@ -71,7 +74,8 @@ class HomeActivity : AppCompatActivity() {
 
     private fun pickEpubBook(uri: Uri){
         try {
-            EpubUtil.loadEpubFromUri(this, uri)
+            if (EpubUtil.loadEpubFromUri(this, uri))
+                startActivity(Intent(this, ReadingActivity::class.java))
         }catch (e: Exception){
             Toast.makeText(this, "读取失败", Toast.LENGTH_LONG).show()
         }
