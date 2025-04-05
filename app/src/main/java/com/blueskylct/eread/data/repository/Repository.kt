@@ -35,4 +35,10 @@ class Repository {
         }
         deferred.await()
     }
+
+    suspend fun deleteBook(book: CacheBook){
+        withContext(Dispatchers.IO){
+            bookDao.delete(book)
+        }
+    }
 }

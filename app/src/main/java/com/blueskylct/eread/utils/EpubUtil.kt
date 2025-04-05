@@ -1,7 +1,6 @@
 package com.blueskylct.eread.utils
 
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import com.blueskylct.eread.MyApplication
 import com.blueskylct.eread.data.repository.Repository
@@ -20,17 +19,14 @@ object EpubUtil {
      * @since 2025/3/31
      * 从Uri加载epub文件
      */
-    fun loadEpubFromUri(activity: HomeActivity, uri: Uri, isSave: Boolean = true): Boolean{
+    fun loadEpubFromUri(activity: HomeActivity, uri: Uri, isNeedSave: Boolean = true): Boolean{
         try {
-            PermissionUtil.checkReadPermission(activity)
-            Log.d("uri", uri.toString())
             if (isEpub(uri))
             {
                 val inputStream = activity.contentResolver.openInputStream(uri)
-                Log.d("io", "Good" + activity.contentResolver.toString())
                 val book = epubReader.readEpub(inputStream)
                 book?.let{
-                    if (isSave)
+                    if (isNeedSave)
                         saveToRoom(activity, uri, book)
                     MyApplication.getInstance().setBook(it)
                     return true
@@ -60,7 +56,6 @@ object EpubUtil {
                 activity.viewModel.loadBook()
             }
     }
-
 
     /**
      * @author Blueskylct

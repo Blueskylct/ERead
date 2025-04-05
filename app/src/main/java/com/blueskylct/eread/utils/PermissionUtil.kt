@@ -32,13 +32,6 @@ object PermissionUtil {
     }
 
     /**
-     *
-     *
-     */
-    fun checkReadPermission(context: Context) =
-        PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
-
-    /**
      * @author Blueskylct
      * @since 2025/3/29
      * 检查权限请求结果

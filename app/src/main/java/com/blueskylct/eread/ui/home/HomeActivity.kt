@@ -39,7 +39,6 @@ class HomeActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        contentResolver
 
         _viewModel.loadBook()
         adapter = BookListAdapter(_viewModel.bookListLiveData.value as ArrayList, this)
@@ -76,7 +75,7 @@ class HomeActivity : AppCompatActivity() {
         try {
             if (EpubUtil.loadEpubFromUri(this, uri))
                 startActivity(Intent(this, ReadingActivity::class.java))
-        }catch (e: Exception){
+        }catch (_: Exception){
             Toast.makeText(this, "读取失败", Toast.LENGTH_LONG).show()
         }
     }

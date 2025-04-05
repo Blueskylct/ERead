@@ -13,13 +13,15 @@ class HomeViewModel: ViewModel() {
     private val _bookListLiveData = MutableLiveData<List<CacheBook>>()
     val bookListLiveData get() = _bookListLiveData
 
+    init {
+        _bookListLiveData.value = ArrayList()
+    }
+
     fun loadBook(){
         viewModelScope.launch {
             Repository.getInstance().getBook().let {
                 _bookListLiveData.value = it
             }
         }
-        if (_bookListLiveData.value.isNullOrEmpty())
-            _bookListLiveData.value = ArrayList()
     }
 }
