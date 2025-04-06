@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -72,11 +73,9 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun pickEpubBook(uri: Uri){
-        try {
-            if (EpubUtil.loadEpubFromUri(this, uri))
-                startActivity(Intent(this, ReadingActivity::class.java))
-        }catch (_: Exception){
-            Toast.makeText(this, "读取失败", Toast.LENGTH_LONG).show()
-        }
+        if (EpubUtil.loadEpubFromUri(this, uri))
+            startActivity(Intent(this, ReadingActivity::class.java))
+        else
+            Log.d("load", "加载epub失败")
     }
 }

@@ -40,7 +40,7 @@ class BookListAdapter(private val bookList: ArrayList<CacheBook>, private val ac
         holder.title.text = book.title
         holder.introduction.text = book.introduction
         holder.itemView.setOnClickListener {
-            if (EpubUtil.loadEpubFromUri(activity, book.uri.toUri(), false)) {
+            if (EpubUtil.loadEpub(book.uri.toUri())) {
                 activity.startActivity(Intent(activity, ReadingActivity::class.java))
             }
         }
