@@ -17,6 +17,7 @@ class HomeViewModel: ViewModel() {
         _bookListLiveData.value = ArrayList()
     }
 
+    //从数据库中加载书籍信息
     fun loadBook(){
         viewModelScope.launch {
             Repository.getInstance().getBook().let {

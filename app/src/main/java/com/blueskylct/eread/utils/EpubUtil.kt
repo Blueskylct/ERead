@@ -1,5 +1,7 @@
 package com.blueskylct.eread.utils
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.widget.Toast
 import com.blueskylct.eread.MyApplication
@@ -7,9 +9,12 @@ import com.blueskylct.eread.data.repository.Repository
 import com.blueskylct.eread.domain.model.CacheBook
 import com.blueskylct.eread.ui.home.HomeActivity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import nl.siegmann.epublib.domain.Book
 import nl.siegmann.epublib.epub.EpubReader
+import java.io.InputStream
 
 object EpubUtil {
     private val epubReader = EpubReader()
@@ -20,8 +25,12 @@ object EpubUtil {
      * 从私有存储加载epub文件
      */
     fun loadEpub(uri: Uri): Boolean{
-        val inputStream = runBlocking {
-            Repository.getInstance().loadEpubFromPrivateStorage(getFileNameFromUri(uri))
+        val inputStream : InputStream
+        runBlocking(Dispatchers.IO) {
+            val deferred = async {
+                Repository.getInstance().loadEpubFromPrivateStorage(getFileNameFromUri(uri))
+            }
+            inputStream = deferred.await()
         }
         val book = epubReader.readEpub(inputStream)
         book?.let {
@@ -60,6 +69,12 @@ object EpubUtil {
         return false
     }
 
+    fun loadEpubCoverImage(uri: Uri): Bitmap = runBlocking {
+            BitmapFactory.decodeStream(Repository.getInstance()
+                .loadEpubCoverImage(getFileNameFromUri(uri)))
+        }
+
+
     /**
      * @author Blueskylct
      * @since 2025/4/4
@@ -67,10 +82,11 @@ object EpubUtil {
      */
     private fun saveToRoom(activity: HomeActivity, uri: Uri, book: Book){
         val cacheBook = convertBook(uri, book)
-        val list = activity.viewModel.bookListLiveData.value as ArrayList<CacheBook>
         runBlocking(Dispatchers.IO) {
-            Repository.getInstance().insertBook(cacheBook)
-            activity.viewModel.loadBook()
+            launch {
+                Repository.getInstance().insertBook(cacheBook)
+                activity.viewModel.loadBook()
+            }
         }
     }
 

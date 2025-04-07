@@ -57,6 +57,12 @@ class Repository {
         FileOutputStream(privateFile).use {
                 outputStream -> epubWriter.write(book,outputStream)
         }
+
+        val coverImage = book.coverImage.data
+        val imageFile = File(MyApplication.getInstance().filesDir, "$fileName.jpg")
+        FileOutputStream(imageFile).use {
+            outputStream -> outputStream.write(coverImage)
+        }
     }
 
     /**
@@ -68,5 +74,11 @@ class Repository {
     = withContext(Dispatchers.IO){
         val file = File(MyApplication.getInstance().filesDir, fileName)
         file.inputStream() as InputStream
+    }
+
+    suspend fun loadEpubCoverImage(fileName: String)
+    = withContext(Dispatchers.IO){
+        val file = File(MyApplication.getInstance().filesDir, "$fileName.jpg")
+        file.inputStream()
     }
 }

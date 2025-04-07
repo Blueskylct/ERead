@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ERead</string>
+    <string name="addBook">增添书籍</string>
+    <string name="setting">设置</string>
 </resources>

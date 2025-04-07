@@ -13,14 +13,15 @@ import com.blueskylct.eread.ui.home.HomeActivity
 import com.blueskylct.eread.ui.reading.ReadingActivity
 import com.blueskylct.eread.utils.EpubUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class BookListAdapter(private val bookList: ArrayList<CacheBook>, private val activity: HomeActivity):
     RecyclerView.Adapter<BookListAdapter.BookListViewHolder>() {
 
     inner class BookListViewHolder(binding: ItemBookBinding) : RecyclerView.ViewHolder(binding.root){
+        val frontCover = binding.frontCover
         val title = binding.title
-        val introduction = binding.introduction
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookListViewHolder {
@@ -35,10 +36,9 @@ class BookListAdapter(private val bookList: ArrayList<CacheBook>, private val ac
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: BookListViewHolder, position: Int) {
         val book = bookList[position]
-        //val bitmap = BitmapFactory.decodeStream(book.coverImage.inputStream)
-        //holder.frontCover.setImageBitmap(bitmap)
+        val bitmap = EpubUtil.loadEpubCoverImage(book.uri.toUri())
+        holder.frontCover.setImageBitmap(bitmap)
         holder.title.text = book.title
-        holder.introduction.text = book.introduction
         holder.itemView.setOnClickListener {
             if (EpubUtil.loadEpub(book.uri.toUri())) {
                 activity.startActivity(Intent(activity, ReadingActivity::class.java))
@@ -52,12 +52,14 @@ class BookListAdapter(private val bookList: ArrayList<CacheBook>, private val ac
                 .setPositiveButton("确认") { _,_ ->
                     bookList.remove(book)
                     runBlocking {
-                        Repository.getInstance().deleteBook(book)
+                        launch {
+                            Repository.getInstance().deleteBook(book)
+                        }
                     }
                     notifyDataSetChanged()
                 }
-                .setNegativeButton("取消") { _, _ ->
-                    //TODO
+                .setNegativeButton("取消"){
+                    _, _ -> //TODO
                 }
                 .show()
             true

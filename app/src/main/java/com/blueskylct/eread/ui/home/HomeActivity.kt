@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,7 +13,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
+import com.blueskylct.eread.R
 import com.blueskylct.eread.databinding.ActivityHomeBinding
 import com.blueskylct.eread.ui.adapter.BookListAdapter
 import com.blueskylct.eread.ui.reading.ReadingActivity
@@ -43,7 +45,7 @@ class HomeActivity : AppCompatActivity() {
 
         _viewModel.loadBook()
         adapter = BookListAdapter(_viewModel.bookListLiveData.value as ArrayList, this)
-        binding.recyclerview.layoutManager = LinearLayoutManager(this)
+        binding.recyclerview.layoutManager = GridLayoutManager(this, 3)
         binding.recyclerview.adapter = adapter
 
         binding.ftb.setOnClickListener {
@@ -56,6 +58,7 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    //重写对请求权限的结果处理
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -72,10 +75,22 @@ class HomeActivity : AppCompatActivity() {
          }
     }
 
+    //对选择的epub文件进行处理
     private fun pickEpubBook(uri: Uri){
         if (EpubUtil.loadEpubFromUri(this, uri))
             startActivity(Intent(this, ReadingActivity::class.java))
         else
             Log.d("load", "加载epub失败")
+    }
+
+    //重写溢出菜单布局
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_overflow, menu)
+        return true
+    }
+
+    //处理菜单选项
+    override fun onOptionsMenuClosed(menu: Menu?) {
+        super.onOptionsMenuClosed(menu)
     }
 }
