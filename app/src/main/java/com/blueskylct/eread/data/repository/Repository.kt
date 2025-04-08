@@ -28,16 +28,31 @@ class Repository {
 
     private val bookDao = AppDatabase.getInstance(MyApplication.getInstance()).bookDao()
 
+    /**
+     * @author Blueskylct
+     * @since 2025/4/1
+     * 新增书籍
+     */
     suspend fun insertBook(book: CacheBook)
     = withContext(Dispatchers.IO){
         bookDao.insert(book)
     }
 
+    /**
+     * @author Blueskylct
+     * @since 2025/4/1
+     * 删除书籍信息
+     */
     suspend fun deleteBook(book: CacheBook)
             = withContext(Dispatchers.IO){
         bookDao.delete(book)
     }
 
+    /**
+     * @author Blueskylct
+     * @since 2025/4/1
+     * 加载全部书籍信息
+     */
     suspend fun getBook(): List<CacheBook>
     = withContext(Dispatchers.IO){
         val deferred = async {
@@ -55,19 +70,21 @@ class Repository {
         val epubWriter = EpubWriter()
         val privateFile = File(MyApplication.getInstance().filesDir, fileName)
         FileOutputStream(privateFile).use {
-                outputStream -> epubWriter.write(book,outputStream)
+            outputStream -> epubWriter.write(book,outputStream)
+            outputStream.close()
         }
 
         val coverImage = book.coverImage.data
         val imageFile = File(MyApplication.getInstance().filesDir, "$fileName.jpg")
         FileOutputStream(imageFile).use {
             outputStream -> outputStream.write(coverImage)
+            outputStream.close()
         }
     }
 
     /**
      * @author Blueskylct
-     * @since 2225/4/5
+     * @since 2025/4/5
      * 从私有存储中加载epub
      */
     suspend fun loadEpubFromPrivateStorage(fileName: String): InputStream
@@ -76,6 +93,11 @@ class Repository {
         file.inputStream() as InputStream
     }
 
+    /**
+     * @author Blueskylct
+     * @since 2025/4/6
+     * 从私有存储中加载封面
+     */
     suspend fun loadEpubCoverImage(fileName: String)
     = withContext(Dispatchers.IO){
         val file = File(MyApplication.getInstance().filesDir, "$fileName.jpg")

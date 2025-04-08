@@ -66,6 +66,7 @@ class BookListAdapter(private val bookList: ArrayList<CacheBook>, private val ac
         }
     }
 
+    //更新书籍list
     @SuppressLint("NotifyDataSetChanged")
     fun updateData(newList: ArrayList<CacheBook>){
         bookList.clear()

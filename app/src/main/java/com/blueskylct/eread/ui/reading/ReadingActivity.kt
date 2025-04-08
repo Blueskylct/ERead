@@ -28,9 +28,14 @@ class ReadingActivity : AppCompatActivity() {
     private fun showChapter(){
         val contents = MyApplication.getInstance().getBook().contents
         val string = StringBuilder()
-        for (content in contents){
+        for (content in contents) {
             string.append(content.inputStream.readBytes().toString(Charsets.UTF_8))
+            content.close()
         }
         binding.vm.loadDataWithBaseURL(null, string.toString(), "text/html", "UTF-8", null)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 }

@@ -33,6 +33,7 @@ object EpubUtil {
             inputStream = deferred.await()
         }
         val book = epubReader.readEpub(inputStream)
+        inputStream.close()
         book?.let {
             MyApplication.getInstance().setBook(it)
             return true
@@ -69,10 +70,19 @@ object EpubUtil {
         return false
     }
 
-    fun loadEpubCoverImage(uri: Uri): Bitmap = runBlocking {
-            BitmapFactory.decodeStream(Repository.getInstance()
-                .loadEpubCoverImage(getFileNameFromUri(uri)))
+    /**
+     * @author Blueskylct
+     * @since 2025/4/7
+     */
+    fun loadEpubCoverImage(uri: Uri): Bitmap = runBlocking(Dispatchers.IO){
+        val deferred = async {
+            val inputStream = Repository.getInstance().loadEpubCoverImage(getFileNameFromUri(uri))
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            inputStream.close()
+            bitmap
         }
+        deferred.await()
+    }
 
 
     /**
