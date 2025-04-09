@@ -71,14 +71,12 @@ class Repository {
         val privateFile = File(MyApplication.getInstance().filesDir, fileName)
         FileOutputStream(privateFile).use {
             outputStream -> epubWriter.write(book,outputStream)
-            outputStream.close()
         }
 
         val coverImage = book.coverImage.data
         val imageFile = File(MyApplication.getInstance().filesDir, "$fileName.jpg")
         FileOutputStream(imageFile).use {
             outputStream -> outputStream.write(coverImage)
-            outputStream.close()
         }
     }
 
