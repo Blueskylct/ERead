@@ -121,6 +121,7 @@
         tools:ignore="VisualLintBounds">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chapter_recyclerview"
             android:layout_width="280dp"
             android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize"

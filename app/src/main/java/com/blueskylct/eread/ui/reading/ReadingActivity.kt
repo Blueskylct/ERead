@@ -5,12 +5,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.blueskylct.eread.MyApplication
 import com.blueskylct.eread.databinding.ActivityReadingBinding
+import com.blueskylct.eread.ui.adapter.ChapterListAdapter
+import java.util.ArrayList
 
 class ReadingActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityReadingBinding
+    private val viewModel by lazy {
+        ViewModelProvider(this)[ReadingViewModel::class.java]
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,8 +29,11 @@ class ReadingActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val book = MyApplication.getInstance().getBook()
-        val guide = book.guide
+        //val book = MyApplication.getInstance().getBook()
+        //val guide = book.guide
+        binding.chapterRecyclerview.adapter = ChapterListAdapter(viewModel.chapterListLiveData.value as  ArrayList)
+        binding.chapterRecyclerview.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
         showChapter()
     }
 
