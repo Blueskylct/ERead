@@ -1,5 +1,6 @@
 package com.blueskylct.eread.ui.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -29,5 +30,12 @@ class ChapterListAdapter(private val chapters: ArrayList<String>): RecyclerView.
 
     override fun getItemCount(): Int {
         return chapters.size
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateList(list: ArrayList<String>){
+        chapters.clear()
+        chapters.addAll(list)
+        notifyDataSetChanged()
     }
 }

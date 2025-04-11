@@ -136,4 +136,18 @@ object EpubUtil {
      */
     fun getFileNameFromUri(uri: Uri) =
         Regex( "[^/]+\\.epub\$", RegexOption.IGNORE_CASE).find(uri.path.toString())?.value ?: "default.epub"
+
+    /**
+     * @author Blueskylct
+     * @since 2025/4/11
+     * 获取章节信息
+     */
+    fun getChapter(book: Book): ArrayList<String>{
+        val list = ArrayList<String>()
+        val contents = book.contents
+        for(resource in contents){
+            list.add(String(resource.data, Charsets.UTF_8))
+        }
+        return list
+    }
 }
