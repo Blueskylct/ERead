@@ -25,7 +25,7 @@ class ChapterListAdapter(private val chapters: ArrayList<String>): RecyclerView.
         position: Int
     ) {
         val chapter = chapters[position]
-        holder.chapter.text = chapter
+        holder.chapter.text = chapter.length.toString()
     }
 
     override fun getItemCount(): Int {
