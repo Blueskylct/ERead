@@ -19,6 +19,7 @@ class ReadingActivity : AppCompatActivity() {
     private val viewModel by lazy {
         ViewModelProvider(this)[ReadingViewModel::class.java]
     }
+    private var isToolBarVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,10 +41,51 @@ class ReadingActivity : AppCompatActivity() {
             adapter.updateList(it as ArrayList)
             showChapter(list[4])
         }
+
+        binding.vm.setOnClickListener { toggleToolbars() }
     }
 
     private fun showChapter(content: String){
         binding.vm.loadData(content, "text/html", "UTF-8")
+    }
+
+    private fun toggleToolbars(){
+        if (isToolBarVisible){
+            hideToolbar()
+        }
+        else{
+           showToolbar()
+        }
+
+    }
+
+    private fun showToolbar(){
+        isToolBarVisible = true
+
+        binding.topToolbar.animate()
+            .translationY(0f)
+            .setDuration(300)
+            .start()
+
+        binding.bottomToolbar.animate()
+            .translationY(0f)
+            .setDuration(300)
+            .start()
+
+    }
+
+    private fun hideToolbar(){
+        isToolBarVisible = false
+
+        binding.topToolbar.animate()
+            .translationY(-binding.topToolbar.height.toFloat())
+            .setDuration(300)
+            .start()
+
+        binding.bottomToolbar.animate()
+            .translationY(binding.bottomToolbar.height.toFloat())
+            .setDuration(300)
+            .start()
     }
 
     override fun onDestroy() {

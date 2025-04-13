@@ -32,6 +32,7 @@
         </RelativeLayout>
 
         <LinearLayout
+            android:id="@+id/top_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="top"
@@ -67,6 +68,7 @@
         </LinearLayout>
         <!-- 底部工具栏 -->
         <LinearLayout
+            android:id="@+id/bottom_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="bottom"
