@@ -1,17 +1,14 @@
 package com.blueskylct.eread.ui.reading
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.blueskylct.eread.MyApplication
 import com.blueskylct.eread.databinding.ActivityReadingBinding
 import com.blueskylct.eread.ui.adapter.ChapterListAdapter
-import com.blueskylct.eread.utils.EpubUtil
 
 class ReadingActivity : AppCompatActivity() {
 
@@ -45,10 +42,12 @@ class ReadingActivity : AppCompatActivity() {
         binding.vm.setOnClickListener { toggleToolbars() }
     }
 
+    //显示章节内容
     private fun showChapter(content: String){
         binding.vm.loadData(content, "text/html", "UTF-8")
     }
 
+    //工具栏显示切换
     private fun toggleToolbars(){
         if (isToolBarVisible){
             hideToolbar()
@@ -59,6 +58,7 @@ class ReadingActivity : AppCompatActivity() {
 
     }
 
+    //显示工具栏
     private fun showToolbar(){
         isToolBarVisible = true
 
@@ -74,6 +74,7 @@ class ReadingActivity : AppCompatActivity() {
 
     }
 
+    //隐藏工具栏
     private fun hideToolbar(){
         isToolBarVisible = false
 
