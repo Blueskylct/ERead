@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blueskylct.eread.MyApplication
 import com.blueskylct.eread.utils.EpubUtil
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ReadingViewModel: ViewModel() {
@@ -12,13 +13,22 @@ class ReadingViewModel: ViewModel() {
     private val _chapterListLiveData = MutableLiveData<List<String>>()
     val chapterListLiveData get() = _chapterListLiveData
 
+    private val _chapterContentLiveData = MutableLiveData<String>()
+    val chapterContentLiveData get() = _chapterContentLiveData
+
     init {
         _chapterListLiveData.value = ArrayList()
+        _chapterContentLiveData.value = ""
     }
 
-    fun loadChapter(){
+    fun loadChapters(){
+        _chapterListLiveData.value =
+            EpubUtil.getChapter(MyApplication.getInstance().getBook())
+    }
+
+    fun setContent(content: String){
         viewModelScope.launch {
-            _chapterListLiveData.value = EpubUtil.getChapter(MyApplication.getInstance().getBook())
+            _chapterContentLiveData.value = content
         }
     }
 

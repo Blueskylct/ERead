@@ -1,6 +1,8 @@
 package com.blueskylct.eread.ui.reading
 
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -13,9 +15,10 @@ import com.blueskylct.eread.ui.adapter.ChapterListAdapter
 class ReadingActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityReadingBinding
-    private val viewModel by lazy {
+    private val _viewModel by lazy {
         ViewModelProvider(this)[ReadingViewModel::class.java]
     }
+    val viewModel get() = _viewModel
     private var isToolBarVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,18 +31,26 @@ class ReadingActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val list = viewModel.chapterListLiveData.value as ArrayList
-        val adapter = ChapterListAdapter(list)
+        _viewModel.loadChapters()
+        val list = _viewModel.chapterListLiveData.value as ArrayList
+        Log.d("list", list.size.toString())
+        val adapter = ChapterListAdapter(list, this)
         binding.chapterRecyclerview.adapter = adapter
         binding.chapterRecyclerview.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        viewModel.loadChapter()
+        showChapter(list[4])
+        Log.d("list", list[4])
 
-        viewModel.chapterListLiveData.observe(this){
+        _viewModel.chapterListLiveData.observe(this){
             adapter.updateList(it as ArrayList)
-            showChapter(list[4])
         }
 
-        binding.vm.setOnClickListener { toggleToolbars() }
+        _viewModel.chapterContentLiveData.observe(this){
+            binding.vm.clearFormData()
+            binding.vm.clearHistory()
+            showChapter(it)
+        }
+
+        //binding.vm.setOnClickListener { toggleToolbars() }
     }
 
     //显示章节内容
@@ -62,10 +73,14 @@ class ReadingActivity : AppCompatActivity() {
     private fun showToolbar(){
         isToolBarVisible = true
 
+        binding.topToolbar.visibility = View.VISIBLE
+
         binding.topToolbar.animate()
             .translationY(0f)
             .setDuration(300)
             .start()
+
+        binding.bottomToolbar.visibility = View.VISIBLE
 
         binding.bottomToolbar.animate()
             .translationY(0f)
@@ -78,10 +93,14 @@ class ReadingActivity : AppCompatActivity() {
     private fun hideToolbar(){
         isToolBarVisible = false
 
+        binding.topToolbar.visibility = View.GONE
+
         binding.topToolbar.animate()
             .translationY(-binding.topToolbar.height.toFloat())
             .setDuration(300)
             .start()
+
+        binding.bottomToolbar.visibility = View.GONE
 
         binding.bottomToolbar.animate()
             .translationY(binding.bottomToolbar.height.toFloat())

@@ -1,12 +1,14 @@
 package com.blueskylct.eread.ui.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskylct.eread.databinding.ItemChapterBinding
+import com.blueskylct.eread.ui.reading.ReadingActivity
 
-class ChapterListAdapter(private val chapters: ArrayList<String>): RecyclerView.Adapter<ChapterListAdapter.ChapterListViewHolder>() {
+class ChapterListAdapter(private val chapters: ArrayList<String>, private val activity: ReadingActivity): RecyclerView.Adapter<ChapterListAdapter.ChapterListViewHolder>() {
 
     inner class ChapterListViewHolder(binding: ItemChapterBinding): RecyclerView.ViewHolder(binding.root){
         val chapter = binding.chapter
@@ -25,7 +27,10 @@ class ChapterListAdapter(private val chapters: ArrayList<String>): RecyclerView.
         position: Int
     ) {
         val chapter = chapters[position]
-        holder.chapter.text = chapter.length.toString()
+        holder.chapter.text = position.toString()
+        holder.itemView.setOnClickListener {
+            activity.viewModel.setContent(chapter)
+        }
     }
 
     override fun getItemCount(): Int {
