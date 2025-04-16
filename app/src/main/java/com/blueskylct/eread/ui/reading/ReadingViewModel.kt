@@ -18,7 +18,6 @@ class ReadingViewModel: ViewModel() {
 
     init {
         _chapterListLiveData.value = ArrayList()
-        _chapterContentLiveData.value = ""
     }
 
     fun loadChapters(){

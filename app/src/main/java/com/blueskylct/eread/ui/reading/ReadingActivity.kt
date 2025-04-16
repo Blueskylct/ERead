@@ -1,7 +1,6 @@
 package com.blueskylct.eread.ui.reading
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -33,16 +32,9 @@ class ReadingActivity : AppCompatActivity() {
         }
         _viewModel.loadChapters()
         val list = _viewModel.chapterListLiveData.value as ArrayList
-        Log.d("list", list.size.toString())
-        val adapter = ChapterListAdapter(list, this)
-        binding.chapterRecyclerview.adapter = adapter
+        binding.chapterRecyclerview.adapter = ChapterListAdapter(list, this)
         binding.chapterRecyclerview.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        showChapter(list[4])
-        Log.d("list", list[4])
-
-        _viewModel.chapterListLiveData.observe(this){
-            adapter.updateList(it as ArrayList)
-        }
+        _viewModel.setContent(list[0])
 
         _viewModel.chapterContentLiveData.observe(this){
             binding.vm.clearFormData()
@@ -50,12 +42,12 @@ class ReadingActivity : AppCompatActivity() {
             showChapter(it)
         }
 
-        //binding.vm.setOnClickListener { toggleToolbars() }
+        binding.vm.setOnClickListener { toggleToolbars() }
     }
 
     //显示章节内容
     private fun showChapter(content: String){
-        binding.vm.loadData(content, "text/html", "UTF-8")
+        binding.vm.loadDataWithBaseURL(null, content, "text/html", "utf-8", null)
     }
 
     //工具栏显示切换
@@ -66,7 +58,6 @@ class ReadingActivity : AppCompatActivity() {
         else{
            showToolbar()
         }
-
     }
 
     //显示工具栏
