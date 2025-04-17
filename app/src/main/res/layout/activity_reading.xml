@@ -115,7 +115,7 @@
     </FrameLayout>
 
     <com.google.android.material.navigation.NavigationView
-        android:layout_width="280dp"
+        android:layout_width="200dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:layout_marginStart="0dp"
@@ -125,7 +125,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/chapter_recyclerview"
-            android:layout_width="280dp"
+            android:layout_width="200dp"
             android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize"
             android:clipToPadding="false"
