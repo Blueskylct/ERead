@@ -1,12 +1,17 @@
 package com.blueskylct.eread.ui.reading
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blueskylct.eread.databinding.ActivityReadingBinding
 import com.blueskylct.eread.ui.adapter.ChapterListAdapter
@@ -20,6 +25,7 @@ class ReadingActivity : AppCompatActivity() {
     val viewModel get() = _viewModel
     private var isToolBarVisible = false
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -30,24 +36,47 @@ class ReadingActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        //加载章节数据
         _viewModel.loadChapters()
+        //加载章节目录
         val list = _viewModel.chapterListLiveData.value as ArrayList
         binding.chapterRecyclerview.adapter = ChapterListAdapter(list, this)
         binding.chapterRecyclerview.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        //设置章节目录的分割线
+        val divider = DividerItemDecoration(this, LinearLayoutManager.HORIZONTAL)
+        binding.chapterRecyclerview.addItemDecoration(divider)
+        //初始化WebView内容
         _viewModel.setContent(list[0])
+        //为WebView获取系统焦点
+        binding.wv.requestFocus()
+        binding.wv.requestFocusFromTouch()
+        binding.wv.setOnTouchListener {
+            v, event ->
+            v.performClick()
+            false
+        }
+        Log.d("WebView Focus", binding.wv.hasFocus().toString())
+        binding.wv.webViewClient = object: WebViewClient(){
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                binding.wv.requestFocus()
+                binding.wv.requestFocusFromTouch()
+            }
+        }
 
         _viewModel.chapterContentLiveData.observe(this){
-            binding.vm.clearFormData()
-            binding.vm.clearHistory()
             showChapter(it)
         }
 
-        binding.vm.setOnClickListener { toggleToolbars() }
+        binding.wv.setOnClickListener {
+            toggleToolbars()
+            Log.d("WebView CLicked", "true")
+        }
     }
 
     //显示章节内容
     private fun showChapter(content: String){
-        binding.vm.loadDataWithBaseURL(null, content, "text/html", "utf-8", null)
+        binding.wv.loadDataWithBaseURL(null, content, "text/html", "utf-8", null)
     }
 
     //工具栏显示切换
