@@ -28,7 +28,10 @@ class ChapterListAdapter(private val chapters: ArrayList<String>, private val ac
         val chapter = chapters[position]
         holder.chapter.text = position.toString()
         holder.itemView.setOnClickListener {
-            activity.viewModel.setContent(chapter)
+            activity.viewModel.apply {
+                setContent(chapter)
+                setIndex(position)
+            }
         }
     }
 

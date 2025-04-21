@@ -18,6 +18,7 @@ import java.io.InputStream
 
 object EpubUtil {
     private val epubReader = EpubReader()
+    val urlList = ArrayList<String>()
 
     /**
      * @author Blueskylct
@@ -145,8 +146,11 @@ object EpubUtil {
     fun getChapter(book: Book): ArrayList<String>{
         val list = ArrayList<String>()
         val contents = book.contents
+        if (urlList.isNotEmpty())
+            urlList.clear()
         for(resource in contents){
             list.add(String(resource.data, Charsets.UTF_8))
+            urlList.add(resource.href)
         }
         return list
     }

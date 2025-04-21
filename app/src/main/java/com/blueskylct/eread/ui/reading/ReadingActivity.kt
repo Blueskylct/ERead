@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blueskylct.eread.databinding.ActivityReadingBinding
 import com.blueskylct.eread.ui.adapter.ChapterListAdapter
+import com.blueskylct.eread.utils.EpubUtil
 
 class ReadingActivity : AppCompatActivity() {
 
@@ -24,8 +25,9 @@ class ReadingActivity : AppCompatActivity() {
     }
     val viewModel get() = _viewModel
     private var isToolBarVisible = false
+    private var clickedTime: Long = 0
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -47,36 +49,53 @@ class ReadingActivity : AppCompatActivity() {
         binding.chapterRecyclerview.addItemDecoration(divider)
         //初始化WebView内容
         _viewModel.setContent(list[0])
-        //为WebView获取系统焦点
-        binding.wv.requestFocus()
-        binding.wv.requestFocusFromTouch()
-        binding.wv.setOnTouchListener {
-            v, event ->
-            v.performClick()
-            false
-        }
-        Log.d("WebView Focus", binding.wv.hasFocus().toString())
-        binding.wv.webViewClient = object: WebViewClient(){
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-                binding.wv.requestFocus()
-                binding.wv.requestFocusFromTouch()
+
+        binding.wv.apply {
+            //设置WebView
+            settings.apply {
+                javaScriptEnabled = true
+                allowFileAccess = true
+                allowContentAccess = true
+                allowFileAccessFromFileURLs = true
+                allowUniversalAccessFromFileURLs = true
+            }
+            webViewClient = object: WebViewClient(){
+                override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                    url?.let {
+                        if (it.startsWith("file://"))
+                            view?.loadUrl(url)
+                    }
+                    return true
+                }
+            }
+            //为WebView获取系统焦点
+            requestFocus()
+            requestFocusFromTouch()
+            //拦截WebView的触摸事件
+            setOnTouchListener {
+                    v, event ->
+                v.performClick()
+                false
             }
         }
 
         _viewModel.chapterContentLiveData.observe(this){
-            showChapter(it)
+            val url = "file://${EpubUtil.urlList[viewModel.index]}"
+            showChapter(url, it)
         }
 
         binding.wv.setOnClickListener {
-            toggleToolbars()
-            Log.d("WebView CLicked", "true")
+            val clickTime = System.currentTimeMillis()
+            if (clickTime > clickedTime + 300){
+                clickedTime = clickTime
+                toggleToolbars()
+            }
         }
     }
 
     //显示章节内容
-    private fun showChapter(content: String){
-        binding.wv.loadDataWithBaseURL(null, content, "text/html", "utf-8", null)
+    private fun showChapter(url: String, content: String){
+        binding.wv.loadDataWithBaseURL(url, content, "text/html", "utf-8", null)
     }
 
     //工具栏显示切换
@@ -97,14 +116,14 @@ class ReadingActivity : AppCompatActivity() {
 
         binding.topToolbar.animate()
             .translationY(0f)
-            .setDuration(300)
+            .setDuration(100)
             .start()
 
         binding.bottomToolbar.visibility = View.VISIBLE
 
         binding.bottomToolbar.animate()
             .translationY(0f)
-            .setDuration(300)
+            .setDuration(100)
             .start()
 
     }
@@ -117,14 +136,14 @@ class ReadingActivity : AppCompatActivity() {
 
         binding.topToolbar.animate()
             .translationY(-binding.topToolbar.height.toFloat())
-            .setDuration(300)
+            .setDuration(100)
             .start()
 
         binding.bottomToolbar.visibility = View.GONE
 
         binding.bottomToolbar.animate()
             .translationY(binding.bottomToolbar.height.toFloat())
-            .setDuration(300)
+            .setDuration(100)
             .start()
     }
 

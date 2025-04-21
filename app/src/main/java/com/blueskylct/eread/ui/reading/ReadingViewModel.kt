@@ -16,6 +16,9 @@ class ReadingViewModel: ViewModel() {
     private val _chapterContentLiveData = MutableLiveData<String>()
     val chapterContentLiveData get() = _chapterContentLiveData
 
+    private var _index = 0
+    val index get() = _index
+
     init {
         _chapterListLiveData.value = ArrayList()
     }
@@ -29,6 +32,10 @@ class ReadingViewModel: ViewModel() {
         viewModelScope.launch {
             _chapterContentLiveData.value = content
         }
+    }
+
+    fun setIndex(index: Int){
+        _index = index
     }
 
 }
