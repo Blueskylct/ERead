@@ -82,6 +82,7 @@ class ReadingActivity : AppCompatActivity() {
         _viewModel.chapterContentLiveData.observe(this){
             val url = "file://${EpubUtil.urlList[viewModel.index]}"
             showChapter(url, it)
+            Log.d("url", url.toString())
         }
 
         binding.wv.setOnClickListener {

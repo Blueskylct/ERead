@@ -46,6 +46,7 @@ class Repository {
     suspend fun deleteBook(book: CacheBook)
             = withContext(Dispatchers.IO){
         bookDao.delete(book)
+        deleteFileForPrivateStorage()
     }
 
     /**
@@ -63,7 +64,7 @@ class Repository {
 
     /**
      * @author Blueskylct
-     * @since 2225/4/5
+     * @since 2025/4/5
      * 将公共存储的文件转存到私有存储中
      */
     fun copyFileToPrivateStorage(fileName: String, book: Book){
@@ -78,6 +79,15 @@ class Repository {
         FileOutputStream(imageFile).use {
             outputStream -> outputStream.write(coverImage)
         }
+    }
+
+    /**
+     * @author Blueskylct
+     * @since 2025/4/22
+     * 从私用存储中删除书籍文件
+     */
+    fun deleteFileForPrivateStorage(){
+
     }
 
     /**
